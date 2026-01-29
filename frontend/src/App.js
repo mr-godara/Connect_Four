@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './index.css';
 
 const WS_URL = 'ws://localhost:3001/ws';
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'https://connect-four-backend-386a.onrender.com';
 
 function App() {
   const [username, setUsername] = useState('');
