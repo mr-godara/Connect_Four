@@ -18,7 +18,7 @@ function App() {
   // Fetch leaderboard
   const fetchLeaderboard = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/leaderboard?limit=10`);
+      const response = await fetch(`${API_URL}/api/leaderboard?limit=10`);
       const data = await response.json();
       if (data.success) {
         setLeaderboard(data.leaderboard);
