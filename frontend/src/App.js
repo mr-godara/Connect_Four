@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './index.css';
 
-const WS_URL = 'ws://localhost:3001/ws';
+const WS_URL = 'wss://connect-four-backend-386a.onrender.com/ws';
 const API_URL = 'https://connect-four-backend-386a.onrender.com';
 
 function App() {
