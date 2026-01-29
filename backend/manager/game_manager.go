@@ -242,13 +242,7 @@ func (gm *GameManager) MakeMove(username string, col int) game.MoveResult {
 
 	return result
 }
-kafka.SendAnalytics("bot_move", map[string]interface{}{
-		"gameId": g.ID,
-		"col":    result.Col,
-		"row":    result.Row,
-	})
 
-	
 func (gm *GameManager) makeBotMove(g *game.Game) {
 	if g == nil || g.Status != "active" {
 		return
