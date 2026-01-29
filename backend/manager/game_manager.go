@@ -275,15 +275,6 @@ func (gm *GameManager) makeBotMove(g *game.Game) {
 }
 
 func (gm *GameManager) broadcastToGame(g *game.Game, message interface{}) {
-	kafka.SendAnalytics("game_completed", map[string]interface{}{
-		"gameId":   g.ID,
-		"player1":  g.Player1.Username,
-		"player2":  g.Player2.Username,
-		"winner":   g.Winner,
-		"duration": duration,
-		"isBot":    g.IsBot,
-	})
-
 	data, _ := json.Marshal(message)
 
 	if g.Player1.Conn != nil {
@@ -309,12 +300,21 @@ func (gm *GameManager) handleGameOver(g *game.Game) {
 		}
 	}
 
+	// Send game completion analytics
+	kafka.SendAnalytics("game_completed", map[string]interface{}{
+		"gameId":   g.ID,
+		"player1":  g.Player1.Username,
+		"player2":  g.Player2.Username,
+		"winner":   g.Winner,
+		"duration": duration,
+		"isBot":    g.IsBot,
+	})
+
 	// Clean up after 30 seconds
 	time.AfterFunc(30*time.Second, func() {
 		gm.mu.Lock()
 		defer gm.mu.Unlock()
 		gm.cleanupGame(g.ID)
-	kafka.SendAnalytics("game_cleaned_up", map[string]interface{}{"gameId": gameID})
 	})
 }
 
@@ -327,10 +327,10 @@ func (gm *GameManager) cleanupGame(gameID string) {
 	delete(gm.games, gameID)
 	delete(gm.playerGames, g.Player1.Username)
 	if !g.IsBot {
-		dkafka.SendAnalytics("player_left_matchmaking", map[string]interface{}{"username": username})
-			elete(gm.playerGames, g.Player2.Username)
+		delete(gm.playerGames, g.Player2.Username)
 	}
 
+	kafka.SendAnalytics("game_cleaned_up", map[string]interface{}{"gameId": gameID})
 	log.Printf("Game %s cleaned up", gameID)
 }
 
